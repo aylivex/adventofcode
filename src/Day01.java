@@ -1,28 +1,32 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Day01 {
     public static void main(String[] args) throws IOException {
-        int max = 0;
         int curr = 0;
         try (final BufferedReader r = new BufferedReader(
-                new InputStreamReader(Day01.class.getResourceAsStream("day01.input.txt")))) {
+                                      new FileReader("input/day01.input.txt"))) {
+            List<Integer> elves = new ArrayList<>();
+
             String line;
             while ((line = r.readLine()) != null) {
                 if (line.isEmpty()) {
-                    if (curr > max) {
-                        max = curr;
-                    }
+                    elves.add(curr);
                     curr = 0;
                 } else {
                     curr += Integer.parseInt(line);
                 }
             }
-            if (curr > max) {
-                max = curr;
-            }
-            System.out.println(max);
+            elves.add(curr);
+            Collections.sort(elves);
+            List<Integer> max = elves.subList(elves.size() - 3, elves.size());
+            System.out.println(max.size());
+            System.out.println(max.stream()
+                                  .reduce(Integer::sum));
         }
     }
 }
