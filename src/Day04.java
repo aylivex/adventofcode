@@ -14,10 +14,8 @@ public class Day04 {
                 List<Integer> intervals = Arrays.stream(line.split("[-,]"))
                                                 .map(Integer::valueOf)
                                                 .toList();
-                if ((intervals.get(0) <= intervals.get(2)
-                    && intervals.get(1) >= intervals.get(3))
-                    || (intervals.get(0) >= intervals.get(2)
-                       && intervals.get(1) <= intervals.get(3))) {
+                if (!(intervals.get(1) < intervals.get(2)
+                     || intervals.get(0) > intervals.get(3))) {
                     sum++;
                 }
             }
