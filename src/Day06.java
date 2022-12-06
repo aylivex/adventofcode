@@ -6,7 +6,7 @@ import static java.lang.System.arraycopy;
 
 public class Day06 {
     public static void main(String[] args) throws IOException {
-        final int[] buf = new int[4];
+        final int[] buf = new int[14];
         int count = 0;
         int last;
         try (final BufferedReader r = new BufferedReader(
