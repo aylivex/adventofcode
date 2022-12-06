@@ -47,9 +47,11 @@ public class Day05 {
                 int from = Integer.parseInt(matcher.group(2)) - 1;
                 int to = Integer.parseInt(matcher.group(3)) - 1;
 
+                Deque<Character> moved = new ArrayDeque<>(num);
                 for (int i = 0; i < num; i++) {
-                    stacks.get(to).addLast(stacks.get(from).removeLast());
+                    moved.addFirst(stacks.get(from).removeLast());
                 }
+                stacks.get(to).addAll(moved);
             }
             System.out.println("\n\nResult:");
             stacks.forEach(s -> {
