@@ -117,5 +117,15 @@ public class Day07 {
                        .filter(s -> s <= 100_000L)
                        .sum();
         System.out.println(sum);
+
+        final long total = 70_000_000;
+        final long free = total - root.getTotalSize();
+        final long required = 30_000_000;
+        long size = root.stream()
+                        .mapToLong(Dir::getTotalSize)
+                        .filter(s -> free + s >= required)
+                        .min()
+                        .orElseThrow();
+        System.out.println(size);
     }
 }
