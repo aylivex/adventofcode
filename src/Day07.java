@@ -15,8 +15,6 @@ public class Day07 {
 
         private final List<Dir> dirs = new ArrayList<>();
 
-        private final List<File> files = new ArrayList<>();
-
         private long fileSize;
 
         private long dirSize = -1;
@@ -36,9 +34,8 @@ public class Day07 {
                        .orElseThrow();
         }
 
-        public void addFile(File file) {
-            files.add(file);
-            fileSize += file.size;
+        public void addFile(long size) {
+            fileSize += size;
         }
 
         public void updateSize() {
@@ -74,9 +71,6 @@ public class Day07 {
         }
     }
 
-    private record File(String name, long size) {
-    }
-
     public static void main(String[] args) throws IOException {
         final Dir root = new Dir("/");
 
@@ -102,9 +96,8 @@ public class Day07 {
                         stack.getFirst()
                              .addDir(new Dir(line.substring("dir ".length())));
                     } else {
-                        String[] fields = line.split(" ");
                         stack.getFirst()
-                             .addFile(new File(fields[1], parseLong(fields[0])));
+                             .addFile(parseLong(line.split(" ")[0]));
                     }
                 }
             }
