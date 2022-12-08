@@ -55,6 +55,17 @@ public class Day08 {
         System.out.println(visGrid.stream()
                                   .mapToInt(BitSet::cardinality)
                                   .sum());
+
+        int max = 0;
+        for (int y = 0; y < grid.rows; y++) {
+            for (int x = 0; x < grid.columns; x++) {
+                int curr = getScenicScore(grid, x, y);
+                if (curr > max) {
+                    max = curr;
+                }
+            }
+        }
+        System.out.println(max);
     }
 
     private static boolean isVisible(final Grid grid,
@@ -80,5 +91,43 @@ public class Day08 {
         }
 
         return fromLeft || fromRight || fromTop || fromBottom;
+    }
+
+    private static int getScenicScore(final Grid grid,
+                                      final int x, final int y) {
+        final int height = grid.getHeight(x, y);
+
+        int fromLeft = 0;
+        for (int col = x - 1; col >= 0; col--) {
+            fromLeft++;
+            if (grid.getHeight(col, y) >= height) {
+                break;
+            }
+        }
+        int fromRight = 0;
+        for (int col = x + 1; col < grid.columns; col++) {
+            fromRight++;
+            if (grid.getHeight(col, y) >= height) {
+                break;
+            }
+        }
+
+        int fromTop = 0;
+        for (int row = y - 1; row >= 0; row--) {
+            fromTop++;
+            if (grid.getHeight(x, row) >= height) {
+                break;
+            }
+        }
+        int fromBottom = 0;
+        for (int row = y + 1; row < grid.rows; row++) {
+            fromBottom++;
+            if (grid.getHeight(x, row) >= height) {
+                break;
+            }
+        }
+
+        return fromLeft * fromRight * fromTop * fromBottom;
+
     }
 }
