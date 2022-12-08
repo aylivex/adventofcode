@@ -38,11 +38,7 @@ public class Day07 {
             fileSize += size;
         }
 
-        public void updateSize() {
-            if (dirSize != -1) {
-                throw new IllegalStateException("Size has been calculated already");
-            }
-
+        private void updateSize() {
             dirs.forEach(Dir::updateSize);
 
             dirSize = dirs.stream()
@@ -52,7 +48,7 @@ public class Day07 {
 
         public long getTotalSize() {
             if (dirSize == -1) {
-                throw new IllegalStateException("Size hasn't been calculated yet");
+                updateSize();
             }
             return fileSize + dirSize;
         }
@@ -66,7 +62,7 @@ public class Day07 {
         @Override
         public String toString() {
             return "dir " + name
-                   + " (" + fileSize + ", " + dirSize + " = "
+                   + " (" + fileSize + " + " + dirSize + " = "
                           + (fileSize + dirSize) + ")";
         }
     }
@@ -102,8 +98,6 @@ public class Day07 {
                 }
             }
         }
-
-        root.updateSize();
 
         long sum = root.stream()
                        .mapToLong(Dir::getTotalSize)
