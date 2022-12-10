@@ -64,9 +64,9 @@ public class Day09 {
             return;
         }
 
-        if (Math.abs(distance.x) >= 2 && distance.y == 0) {
+        if (distance.y == 0) {
             tail.x += sign(distance.x);
-        } else if (distance.x == 0 && Math.abs(distance.y) >= 2) {
+        } else if (distance.x == 0) {
             tail.y += sign(distance.y);
         } else {
             tail.x += sign(distance.x);
