@@ -36,10 +36,16 @@ public class Day09 {
                 int steps = Integer.parseInt(matcher.group(2));
                 while (steps-- > 0) {
                     moveHead(rope.get(0), direction);
-                    for (int i = 1; i < rope.size(); i++) {
-                        moveTail(rope.get(i - 1), rope.get(i));
+
+                    boolean moved;
+                    int i = 1;      // Rope consists of two or more knots
+                    do {
+                        moved = moveTail(rope.get(i - 1), rope.get(i));
+                    } while (++i < rope.size());
+
+                    if (moved) {
+                        visited.add(tail.getLocation());
                     }
-                    visited.add(tail.getLocation());
                 }
             }
         }
@@ -57,11 +63,10 @@ public class Day09 {
         }
     }
 
-    private static void moveTail(Point head, Point tail) {
+    private static boolean moveTail(Point head, Point tail) {
         Point distance = getDistance(head, tail);
         if (isAdjacent(distance)) {
-            // No need to move
-            return;
+            return false;
         }
 
         if (distance.y == 0) {
@@ -72,6 +77,7 @@ public class Day09 {
             tail.x += sign(distance.x);
             tail.y += sign(distance.y);
         }
+        return true;
     }
 
     private static int sign(int n) {
