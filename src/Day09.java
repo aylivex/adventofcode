@@ -41,7 +41,7 @@ public class Day09 {
                     int i = 1;      // Rope consists of two or more knots
                     do {
                         moved = moveTail(rope.get(i - 1), rope.get(i));
-                    } while (++i < rope.size());
+                    } while (moved && ++i < rope.size());
 
                     if (moved) {
                         visited.add(tail.getLocation());
