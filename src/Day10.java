@@ -32,7 +32,6 @@ public class Day10 {
             int addxArg = 0; // dummy initializer
 
             while (true) {
-                cycle++;
                 if (--commandCycles <= 0) {
                     if (command == Command.ADDX) {
                         x += addxArg;
@@ -52,11 +51,20 @@ public class Day10 {
                     commandCycles = command.cycles;
                 }
 
-                if (cycle == strengthCycles[cycleIndex]) {
+                int pos = cycle++ % 40;
+                if (pos == x - 1 || pos == x || pos == x + 1) {
+                    System.out.print("#");
+                } else {
+                    System.out.print(".");
+                }
+                if (pos == 39) {
+                    System.out.println();
+                }
+
+                if (cycleIndex < strengthCycles.length
+                    && cycle == strengthCycles[cycleIndex]) {
                     sum += cycle * x;
-                    if (++cycleIndex >= strengthCycles.length) {
-                        break;
-                    }
+                    ++cycleIndex;
                 }
             }
             System.out.println(sum);
