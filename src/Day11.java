@@ -3,8 +3,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -48,7 +50,9 @@ public class Day11 {
     }
 
     private static final class Monkey {
-        public static final Set<Monkey> monkeys = new LinkedHashSet<>();
+        private static final Set<Monkey> monkeys = new LinkedHashSet<>();
+
+        private static final Map<Integer, Monkey> idMonkey = new HashMap<>();
 
         public final int id;
 
@@ -59,6 +63,8 @@ public class Day11 {
 
         private final List<Item> items = new ArrayList<>();
 
+        private int itemsInspected = 0;
+
         private Monkey(int id, List<Item> items, Operation operation, Arg arg, NextMove move) {
             this.id = id;
             this.items.addAll(items);
@@ -67,16 +73,62 @@ public class Day11 {
             this.move = move;
         }
 
-        public int passToMonkey(final Item item) {
-            return move.nextMove(item);
+        public static void readMonkey(BufferedReader r) throws IOException {
+    //Monkey 0:
+    //  Starting items: 54, 98, 50, 94, 69, 62, 53, 85
+    //  Operation: new = old * 13
+    //  Test: divisible by 3
+    //    If true: throw to monkey 2
+    //    If false: throw to monkey 1
+            String line;
+            int id = parseInt((line = r.readLine())
+                              .substring("Monkey ".length(), line.length() - 1));
+
+            List<Item> items = Arrays.stream(r.readLine()
+                                             .substring("  Starting items: ".length())
+                                             .split(", "))
+                                     .mapToInt(Integer::parseInt)
+                                     .mapToObj(Item::new)
+                                     .toList();
+
+            Pattern operationPattern = Pattern.compile(" {2}Operation: new = old ([*+]) (\\d+|old)");
+            Matcher matcher = operationPattern.matcher(r.readLine());
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException("Invalid operation");
+            }
+            Operation operation = matcher.group(1).equals("+") ? add : multiply;
+            Arg arg = new Arg(matcher.group(2).equals("old") ? null : parseInt(matcher.group(2)));
+
+            int divisibleBy = parseInt(r.readLine().substring("  Test: divisible by ".length()));
+            int monkeyTrue  = parseInt(r.readLine().substring("    If true: throw to monkey ".length()));
+            int monkeyFalse = parseInt(r.readLine().substring("    If false: throw to monkey ".length()));
+
+            Monkey newMonkey =
+                    new Monkey(id, items, operation, arg,
+                               new NextMove((Item item) -> (item.worry % divisibleBy == 0),
+                                            monkeyTrue, monkeyFalse));
+            monkeys.add(newMonkey);
+            idMonkey.put(id, newMonkey);
+        }
+
+        private Monkey passToMonkey(final Item item) {
+            return idMonkey.get(move.nextMove(item));
         }
 
         public void passItems() {
-            items.forEach(this::passItem);
+            List<Item> itemsToPass = new ArrayList<>(items);
+            items.clear();
+            itemsToPass.forEach(this::passItem);
         }
 
-        private void passItem(Item item) {
+        private void passItem(final Item item) {
+            itemsInspected++;
             item.updateWorry(this);
+            passToMonkey(item).items.add(item);
+        }
+
+        public int getItemsInspected() {
+            return itemsInspected;
         }
     }
 
@@ -94,40 +146,6 @@ public class Day11 {
         }
     }
 
-    private static Monkey readMonkey(BufferedReader r) throws IOException {
-//Monkey 0:
-//  Starting items: 54, 98, 50, 94, 69, 62, 53, 85
-//  Operation: new = old * 13
-//  Test: divisible by 3
-//    If true: throw to monkey 2
-//    If false: throw to monkey 1
-        String line;
-        int id = parseInt((line = r.readLine())
-                          .substring("Monkey ".length(), line.length() - 1));
-
-        List<Item> items = Arrays.stream(r.readLine()
-                                         .substring("  Starting items: ".length())
-                                         .split(", "))
-                                 .mapToInt(Integer::parseInt)
-                                 .mapToObj(Item::new)
-                                 .toList();
-
-        Pattern operationPattern = Pattern.compile(" {2}Operation: new = old ([*+]) (\\d+|old)");
-        Matcher matcher = operationPattern.matcher(r.readLine());
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid operation");
-        }
-        Operation operation = matcher.group(1).equals("+") ? add : multiply;
-        Arg arg = new Arg(matcher.group(2).equals("old") ? null : parseInt(matcher.group(2)));
-
-        int divisibleBy = parseInt(r.readLine().substring("  Test: divisible by ".length()));
-        int monkeyTrue  = parseInt(r.readLine().substring("    If true: throw to monkey ".length()));
-        int monkeyFalse = parseInt(r.readLine().substring("    If false: throw to monkey ".length()));
-
-        return new Monkey(id, items, operation, arg,
-                          new NextMove((Item item) -> (item.worry % divisibleBy == 0),
-                                       monkeyTrue, monkeyFalse));
-    }
     public static void main(String[] args) throws IOException {
         final Set<Monkey> monkeys = Monkey.monkeys;
 
@@ -135,7 +153,7 @@ public class Day11 {
                 new FileReader("input/day11.input.txt"))) {
             String line;
             do {
-                monkeys.add(readMonkey(r));
+                Monkey.readMonkey(r);
                 // Empty line between monkeys
                 line = r.readLine();
             } while (line != null);
@@ -144,6 +162,14 @@ public class Day11 {
         for (int i = 0; i < 20; i++) {
             monkeys.forEach(Monkey::passItems);
         }
+
+        int[] inspected = monkeys.stream()
+                                 .mapToInt(Monkey::getItemsInspected)
+                                 .sorted()
+                                 .toArray();
+        System.out.println(Arrays.toString(inspected));
+        System.out.println(Arrays.stream(inspected, inspected.length - 2, inspected.length)
+                                 .sum());
     }
 
 }
