@@ -13,21 +13,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
 
 public class Day11 {
 
     @FunctionalInterface
     private interface Operation {
-        int perform(int old, int arg);
+        long perform(long old, long arg);
     }
 
-    private static final Operation add = Integer::sum;
+    private static final Operation add = Long::sum;
     private static final Operation multiply = (a, b) -> a * b;
 
     private static final class Arg {
-        public final Integer value;
+        public final Long value;
 
-        private Arg(Integer value) {
+        private Arg(Long value) {
             this.value = value;
         }
     }
@@ -97,7 +98,7 @@ public class Day11 {
                 throw new IllegalArgumentException("Invalid operation");
             }
             Operation operation = matcher.group(1).equals("+") ? add : multiply;
-            Arg arg = new Arg(matcher.group(2).equals("old") ? null : parseInt(matcher.group(2)));
+            Arg arg = new Arg(matcher.group(2).equals("old") ? null : parseLong(matcher.group(2)));
 
             int divisibleBy = parseInt(r.readLine().substring("  Test: divisible by ".length()));
             int monkeyTrue  = parseInt(r.readLine().substring("    If true: throw to monkey ".length()));
@@ -133,7 +134,7 @@ public class Day11 {
     }
 
     private static class Item {
-        public int worry;
+        public long worry;
 
         public Item(int worry) {
             this.worry = worry;
