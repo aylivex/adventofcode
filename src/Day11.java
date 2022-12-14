@@ -155,7 +155,7 @@ public class Day11 {
         final Set<Monkey> monkeys = Monkey.monkeys;
 
         try (final BufferedReader r = new BufferedReader(
-                new FileReader("input/day11.sample.txt"))) {
+                new FileReader("input/day11.input.txt"))) {
             String line;
             do {
                 Monkey.readMonkey(r);
