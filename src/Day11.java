@@ -144,13 +144,18 @@ public class Day11 {
                                                     ? worry : monkey.arg.value);
             worry /= 3;
         }
+
+        @Override
+        public String toString() {
+            return "Item: worry=" + worry;
+        }
     }
 
     public static void main(String[] args) throws IOException {
         final Set<Monkey> monkeys = Monkey.monkeys;
 
         try (final BufferedReader r = new BufferedReader(
-                new FileReader("input/day11.input.txt"))) {
+                new FileReader("input/day11.sample.txt"))) {
             String line;
             do {
                 Monkey.readMonkey(r);
@@ -169,7 +174,8 @@ public class Day11 {
                                  .toArray();
         System.out.println(Arrays.toString(inspected));
         System.out.println(Arrays.stream(inspected, inspected.length - 2, inspected.length)
-                                 .sum());
+                                 .reduce((a, b) -> a * b)
+                                 .orElseThrow());
     }
 
 }
