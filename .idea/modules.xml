@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/2022/2022.iml" filepath="$PROJECT_DIR$/2022/2022.iml" />
+      <module fileurl="file://$PROJECT_DIR$/2023/java/2023.iml" filepath="$PROJECT_DIR$/2023/java/2023.iml" />
     </modules>
   </component>
 </project>
