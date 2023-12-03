@@ -88,20 +88,20 @@ public class Day01_2 {
         int dMaxIndex = getMaxValueIndex(digits);
         boolean dValid = dMaxIndex >= 0;
 
-        int first;
+        int last;
         if (sValid && dValid && spelt[sMaxIndex] > digits[dMaxIndex]) {
-            first = SPELT_DIGITS.values()[sMaxIndex].value;
+            last = SPELT_DIGITS.values()[sMaxIndex].value;
         } else if (sValid && dValid) {
-            first = DIGITS[dMaxIndex].charAt(0) - '0';
+            last = DIGITS[dMaxIndex].charAt(0) - '0';
         } else if (sValid && !dValid) {
-            first = SPELT_DIGITS.values()[sMaxIndex].value;
+            last = SPELT_DIGITS.values()[sMaxIndex].value;
         } else if (dValid) {
-            first = DIGITS[dMaxIndex].charAt(0) - '0';
+            last = DIGITS[dMaxIndex].charAt(0) - '0';
         } else {
-            first = -1;
+            last = -1;
         }
 
-        return first;
+        return last;
     }
 
     private static int getMinValueIndex(final int[] array) {
