@@ -56,7 +56,7 @@ public class Day01_2 {
         boolean sValid = sMinIndex >= 0;
 
         int[] digits = Arrays.stream(DIGITS)
-                             .mapToInt(c -> line.lastIndexOf(c))
+                             .mapToInt(c -> line.indexOf(c))
                              .toArray();
         int dMinIndex = getMinValueIndex(digits);
         boolean dValid = dMinIndex >= 0;
