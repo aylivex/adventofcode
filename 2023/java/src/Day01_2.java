@@ -54,17 +54,13 @@ public class Day01_2 {
         boolean sValid = sMinIndex >= 0;
 
         int[] digits = Arrays.stream(DIGITS)
-                             .mapToInt(c -> line.indexOf(c))
+                             .mapToInt(line::indexOf)
                              .toArray();
         int dMinIndex = getMinValueIndex(digits);
         boolean dValid = dMinIndex >= 0;
 
         int first;
-        if (sValid && dValid && spelt[sMinIndex] < digits[dMinIndex]) {
-            first = SPELT_DIGITS.values()[sMinIndex].value;
-        } else if (sValid && dValid) {
-            first = DIGITS[dMinIndex].charAt(0) - '0';
-        } else if (sValid && !dValid) {
+        if (sValid && (!dValid || spelt[sMinIndex] < digits[dMinIndex])) {
             first = SPELT_DIGITS.values()[sMinIndex].value;
         } else if (dValid) {
             first = DIGITS[dMinIndex].charAt(0) - '0';
@@ -83,17 +79,13 @@ public class Day01_2 {
         boolean sValid = sMaxIndex >= 0;
 
         int[] digits = Arrays.stream(DIGITS)
-                             .mapToInt(c -> line.lastIndexOf(c))
+                             .mapToInt(line::lastIndexOf)
                              .toArray();
         int dMaxIndex = getMaxValueIndex(digits);
         boolean dValid = dMaxIndex >= 0;
 
         int last;
-        if (sValid && dValid && spelt[sMaxIndex] > digits[dMaxIndex]) {
-            last = SPELT_DIGITS.values()[sMaxIndex].value;
-        } else if (sValid && dValid) {
-            last = DIGITS[dMaxIndex].charAt(0) - '0';
-        } else if (sValid && !dValid) {
+        if (sValid && (!dValid || spelt[sMaxIndex] > digits[dMaxIndex])) {
             last = SPELT_DIGITS.values()[sMaxIndex].value;
         } else if (dValid) {
             last = DIGITS[dMaxIndex].charAt(0) - '0';
