@@ -6,7 +6,7 @@ import java.nio.file.Path;
 public class Day01_1 {
     public static void main(String[] args) throws IOException {
         int calibrationValue = 0;
-        try (final BufferedReader r = Files.newBufferedReader(Path.of("2023/input/day01.input.txt"))) {
+        try (final BufferedReader r = Files.newBufferedReader(Path.of("2023/input/day01.txt"))) {
             String line;
             while ((line = r.readLine()) != null) {
                 final char[] chars = line.toCharArray();
