@@ -21,17 +21,23 @@ while (<INPUT>) {
     # Remove the game id;
     s/.*: //;
 
-    my %game = ('red' => 0, 'green' => 0, 'blue' => 0);
-    foreach (split(/[,;] ?/)) {
-        (my $number, my $colour) = /(\d+) (\S+)/;
-        $game{$colour} += $number;
+    my $possible = 1;
+    foreach my $set (split(/; ?/)) {
+        my %game = ('red' => 0, 'green' => 0, 'blue' => 0);
+        foreach (split(/, ?/, $set)) {
+            (my $number, my $colour) = /(\d+) (\S+)/;
+            $game{$colour} += $number;
+        }
+
+        if ($game{'red'} > $bag{'red'}
+            || $game{'green'} > $bag{'green'}
+            || $game{'blue'} > $bag{'blue'}) {
+            $possible = 0;
+            last;
+        }
     }
 
-    if ($game{'red'} <= $bag{'red'}
-        && $game{'green'} <= $bag{'green'}
-        && $game{'blue'} <= $bag{'blue'}) {
-        $gameIdSum += $gameId;
-    }
+    $gameIdSum += $gameId if $possible;
 }
 
 print "$gameIdSum\n";
