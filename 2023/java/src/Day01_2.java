@@ -2,31 +2,30 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class Day01_2 {
-    enum SPELT_DIGITS {
-        ONE("one", 1),
-        TWO("two", 2),
-        THREE("three", 3),
-        FOUR("four", 4),
-        FIVE("five", 5),
-        SIX("six", 6),
-        SEVEN("seven", 7),
-        EIGHT("eight", 8),
-        NINE("nine", 9);
-
-        public final String spelt;
-        public final int value;
-
-        SPELT_DIGITS(String spelt, int value) {
-            this.spelt = spelt;
-            this.value = value;
-        }
-    }
-
-    private static final String[] DIGITS =
-            {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    private static final Map<String, Integer> DIGITS =
+            Map.ofEntries(Map.entry("one", 1),
+                          Map.entry("1", 1),
+                          Map.entry("two", 2),
+                          Map.entry("2", 2),
+                          Map.entry("three", 3),
+                          Map.entry("3", 3),
+                          Map.entry("four", 4),
+                          Map.entry("4", 4),
+                          Map.entry("five", 5),
+                          Map.entry("5", 5),
+                          Map.entry("six", 6),
+                          Map.entry("6", 6),
+                          Map.entry("seven", 7),
+                          Map.entry("7", 7),
+                          Map.entry("eight", 8),
+                          Map.entry("8", 8),
+                          Map.entry("nine", 9),
+                          Map.entry("9", 9));
 
     public static void main(String[] args) throws IOException {
         int calibrationValue = 0;
@@ -40,87 +39,39 @@ public class Day01_2 {
         System.out.println(calibrationValue);
     }
 
+    private record Pair(String digit, int index) {}
+
     private static int getCalibrationValue(final String line) {
         int first = getFirstCalibrationDigit(line);
         int last = getLastCalibrationDigit(line);
         return first * 10 + last;
     }
 
+    private static final Predicate<Pair> positiveIndex =
+            pair -> pair.index >= 0;
+
+    private static final Comparator<Pair> pairComparator =
+            Comparator.comparingInt(pair -> pair.index);
+
     private static int getFirstCalibrationDigit(final String line) {
-        int[] spelt = Arrays.stream(SPELT_DIGITS.values())
-                            .mapToInt(v -> line.indexOf(v.spelt))
-                            .toArray();
-        int sMinIndex = getMinValueIndex(spelt);
-        boolean sValid = sMinIndex >= 0;
-
-        int[] digits = Arrays.stream(DIGITS)
-                             .mapToInt(line::indexOf)
-                             .toArray();
-        int dMinIndex = getMinValueIndex(digits);
-        boolean dValid = dMinIndex >= 0;
-
-        int first;
-        if (sValid && (!dValid || spelt[sMinIndex] < digits[dMinIndex])) {
-            first = SPELT_DIGITS.values()[sMinIndex].value;
-        } else if (dValid) {
-            first = DIGITS[dMinIndex].charAt(0) - '0';
-        } else {
-            first = -1;
-        }
-
-        return first;
+        String digit = DIGITS.keySet()
+                             .stream()
+                             .map(d -> new Pair(d, line.indexOf(d)))
+                             .filter(positiveIndex)
+                             .min(pairComparator)
+                             .orElseThrow()
+                       .digit;
+        return DIGITS.get(digit);
     }
 
     private static int getLastCalibrationDigit(final String line) {
-        int[] spelt = Arrays.stream(SPELT_DIGITS.values())
-                            .mapToInt(v -> line.lastIndexOf(v.spelt))
-                            .toArray();
-        int sMaxIndex = getMaxValueIndex(spelt);
-        boolean sValid = sMaxIndex >= 0;
-
-        int[] digits = Arrays.stream(DIGITS)
-                             .mapToInt(line::lastIndexOf)
-                             .toArray();
-        int dMaxIndex = getMaxValueIndex(digits);
-        boolean dValid = dMaxIndex >= 0;
-
-        int last;
-        if (sValid && (!dValid || spelt[sMaxIndex] > digits[dMaxIndex])) {
-            last = SPELT_DIGITS.values()[sMaxIndex].value;
-        } else if (dValid) {
-            last = DIGITS[dMaxIndex].charAt(0) - '0';
-        } else {
-            last = -1;
-        }
-
-        return last;
-    }
-
-    private static int getMinValueIndex(final int[] array) {
-        int result = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] >= 0) {
-                if (result == -1) {
-                    result = i;
-                } else if (array[i] < array[result]) {
-                    result = i;
-                }
-            }
-        }
-        return result;
-    }
-
-    private static int getMaxValueIndex(final int[] array) {
-        int result = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] >= 0) {
-                if (result == -1) {
-                    result = i;
-                } else if (array[i] > array[result]) {
-                    result = i;
-                }
-            }
-        }
-        return result;
+        String digit = DIGITS.keySet()
+                             .stream()
+                             .map(d -> new Pair(d, line.lastIndexOf(d)))
+                             .filter(positiveIndex)
+                             .max(pairComparator)
+                             .orElseThrow()
+                       .digit;
+        return DIGITS.get(digit);
     }
 }
