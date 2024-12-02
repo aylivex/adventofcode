@@ -10,25 +10,23 @@ my $safe = 0;
 input:
 while (<INPUT>) {
     my @levels = split /\s+/;
+    print "@levels\n";
 
     my $dir = 0;
     my $i = 0;
     do {{
         my $diff = $levels[$i] - $levels[$i + 1];
-        if ($diff == 0) {
+        print "\t$levels[$i] - $levels[$i + 1]:\t$diff\t$dir\n";
+        if ($diff == 0 || $diff < -3 || $diff > 3
+            || ($diff > 0 && $dir < 0) || ($diff < 0 && $dir > 0)) {
+            print "\tunsafe\n";
             next input;
         }
-        if (0 < $diff && $diff <= 3) {
-            next input if ($dir < 0);
-            $dir = 1;
-        } elsif (-3 <= $diff && $diff < 0) {
-            next input if ($dir > 0);
-            $dir = -1;
-        } else {
-            next input;
-        }
-    }} while (++$i < $#levels - 1);
+        $dir = $diff;
+        print "\t$dir\n";
+    }} while (++$i < $#levels);
 
+    print "\tsafe\n";
     $safe++;
 }
 
