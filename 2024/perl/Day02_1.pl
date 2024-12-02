@@ -14,19 +14,17 @@ while (<INPUT>) {
 
     my $dir = 0;
     my $i = 0;
-    do {{
+    do {{ # For next ..., just double the braces
+          # https://perldoc.perl.org/perlsyn
         my $diff = $levels[$i] - $levels[$i + 1];
-        print "\t$levels[$i] - $levels[$i + 1]:\t$diff\t$dir\n";
         if ($diff == 0 || $diff < -3 || $diff > 3
             || ($diff > 0 && $dir < 0) || ($diff < 0 && $dir > 0)) {
-            print "\tunsafe\n";
             next input;
         }
         $dir = $diff;
         print "\t$dir\n";
     }} while (++$i < $#levels);
 
-    print "\tsafe\n";
     $safe++;
 }
 
