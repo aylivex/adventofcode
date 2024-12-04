@@ -13,11 +13,10 @@ while (<INPUT>) {
     for my $instr (@intructions) {
         $enabled = 1 if $instr eq "do()";
         $enabled = 0 if $instr eq "don't()";
-        if ($enabled) {
-            if ($instr =~ /mul\((\d{1,3}),(\d{1,3})\)/) {
-                $result += ($1 * $2);
-            }
-        }
+
+        $result += ($1 * $2)
+            if $enabled
+               && $instr =~ /mul\((\d{1,3}),(\d{1,3})\)/;
     }
 }
 
