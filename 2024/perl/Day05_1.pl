@@ -36,7 +36,7 @@ for my $update (@pages) {
         my $j = $i - 1;
         while ($j >= 0 && $valid) {
             my $right = $update_pages[$j];
-            if ($i > 0 && defined $reverse{$right}) {
+            if (defined $reverse{$right}) {
                 for my $page (@{$reverse{$right}}) {
                     if ($page == $left) {
                         $valid = 0;
